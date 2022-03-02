@@ -1,0 +1,27 @@
+{
+    "sensor":{
+	"sensor_id":1,
+        "sensor_name":"humiture",
+        "agreement":"modbus_rtu",
+        "communication":{
+            "port":"/dev/ttyUSB0",
+            "bytesize":8,
+            "baudrate":9600,
+            "parity":"N",
+            "stopbits":1,
+            "device_address":1
+        },
+	"point_location":{
+		"humidity":{
+		    "function_code":3,
+		    "start_address":0,
+		    "data_length":1
+		},
+		"temperature":{
+		    "function_code":3,
+		    "start_address":1,
+		    "data_length":1
+		}
+	}
+    }
+}
