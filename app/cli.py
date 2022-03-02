@@ -1,6 +1,6 @@
 from distutils import file_util
 import click
-from .humiture import modbusSensor
+from .getModbusRtuData import modbusSensor
 import json
 
 
