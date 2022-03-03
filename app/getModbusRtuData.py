@@ -1,4 +1,5 @@
 from doctest import master
+import time
 from modbus_tk import modbus_rtu
 import serial
 import modbus_tk.defines as cst
@@ -18,6 +19,7 @@ class modbusSensor(object):
         self.__parity = parity
         self.__stopbits = stopbits
         self.__device_address = device_address
+        # 建立modbus_rtu协议的通信
         self.__master = modbus_rtu.RtuMaster(serial.Serial(port=self.__port, bytesize=self.__bytesize,
                                                            baudrate=self.__baudrate, parity=self.__parity, stopbits=self.__stopbits))
 
@@ -25,9 +27,16 @@ class modbusSensor(object):
     def getData(self):
         for k, v in self.__point_location.items():
             function_code = v['function_code']
+            # 判断功能码
             if function_code == 3:
+                function_code == cst.READ_HOLDING_REGISTERS
+                # 添加超时时间
                 self.__master.set_timeout(5.0)
+                # 不知道什么意思,猜测是同意采集数据
                 self.__master.set_verbose(True)
+                # 使用动作参数,采集数据
                 sensor_data = self.__master.execute(
-                    self.__device_address, cst.READ_HOLDING_REGISTERS, v['start_address'], v['data_length'])[0]
+                    self.__device_address, function_code, v['start_address'], v['data_length'])[0]
                 print(self.__sensor_name + ":" + k + ":" + str(sensor_data))
+        # 每个传感器采集完睡眠一秒,防止传感器采集太慢,导致超时
+        time.sleep(1)

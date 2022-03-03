@@ -15,31 +15,36 @@ def cli(file):
         with open(file, 'r', encoding='utf8')as f:
             # 使用json.load将文本文件解析为字典类型
             json_data = json.load(f)
-            # 从字典中取需要的数据,并断言数据类型
-            sensor_id = json_data['sensor']['sensor_id']
-            assert isinstance(sensor_id, int)
-            sensor_name = json_data['sensor']['sensor_name']
-            assert isinstance(sensor_name, str)
-            agreement = json_data['sensor']['agreement']
-            assert isinstance(agreement, str)
-            device_descrptor = json_data['sensor']['communication']['port']
-            assert isinstance(device_descrptor, str)
-            bytesize = json_data['sensor']['communication']['bytesize']
-            assert isinstance(bytesize, int)
-            baudrate = json_data['sensor']['communication']['baudrate']
-            assert isinstance(baudrate, int)
-            parity = json_data['sensor']['communication']['parity']
-            assert isinstance(parity, str)
-            stopbits = json_data['sensor']['communication']['stopbits']
-            assert isinstance(stopbits, int)
-            device_address = json_data['sensor']['communication']['device_address']
-            assert isinstance(device_address, int)
-            point_location = json_data['sensor']["point_location"]
-            assert isinstance(point_location, dict)
-            # 如果传感器是modbus_rtu协议,调用modbusSensor类的getData方法,并将所有参数传给modbusSensor类里
-            if agreement == 'modbus_rtu':
-                    modbusSensor(sensor_id, sensor_name, device_descrptor, point_location, bytesize, baudrate, parity, stopbits,
-                                 device_address).getData()
+            # 添加死循环
+            while True:
+                # 遍历json文件中的所有传感器
+                for k in json_data:
+                    print(k)
+                    # 从字典中取需要的数据,并断言数据类型
+                    sensor_id = json_data[k]['sensor_id']
+                    assert isinstance(sensor_id, int)
+                    sensor_name = json_data[k]['sensor_name']
+                    assert isinstance(sensor_name, str)
+                    agreement = json_data[k]['agreement']
+                    assert isinstance(agreement, str)
+                    device_descrptor = json_data[k]['communication']['port']
+                    assert isinstance(device_descrptor, str)
+                    bytesize = json_data[k]['communication']['bytesize']
+                    assert isinstance(bytesize, int)
+                    baudrate = json_data[k]['communication']['baudrate']
+                    assert isinstance(baudrate, int)
+                    parity = json_data[k]['communication']['parity']
+                    assert isinstance(parity, str)
+                    stopbits = json_data[k]['communication']['stopbits']
+                    assert isinstance(stopbits, int)
+                    device_address = json_data[k]['communication']['device_address']
+                    assert isinstance(device_address, int)
+                    point_location = json_data[k]["point_location"]
+                    assert isinstance(point_location, dict)
+                    # 如果传感器是modbus_rtu协议,调用modbusSensor类的getData方法,并将所有参数传给modbusSensor类里
+                    if agreement == 'modbus_rtu':
+                            modbusSensor(sensor_id, sensor_name, device_descrptor, point_location, bytesize, baudrate, parity, stopbits,
+                                        device_address).getData()
     except:
         # 如果解析中出错,抛出异常
         raise [TypeError("上传的文件格式有误")]

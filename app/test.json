@@ -23,5 +23,25 @@
 		    "data_length":1
 		}
 	}
+    },
+    "sensor1":{
+	"sensor_id":2,
+        "sensor_name":"noise",
+        "agreement":"modbus_rtu",
+        "communication":{
+            "port":"/dev/ttyUSB0",
+            "bytesize":8,
+            "baudrate":4800,
+            "parity":"N",
+            "stopbits":1,
+            "device_address":2
+        },
+	"point_location":{
+		"noise":{
+		    "function_code":3,
+		    "start_address":12,
+		    "data_length":1
+		}
+	}
     }
 }
