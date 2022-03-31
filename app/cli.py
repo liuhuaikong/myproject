@@ -1,8 +1,9 @@
-
+#!/usr/bin/env python3
+#! -*-coding:utf-8-*-
 import time
 from time import time
 import click
-from .getModbusRtuData import modbusSensor
+from .GetModbusRtuData import ModbusSensor
 import json
 import threading
 
@@ -20,12 +21,12 @@ def cli(file):
             json_data = json.load(f)
             # 遍历json文件中的所有传感器
             for k in json_data:
-                profile  = {}
+                profile = {}
                 # 从字典中取需要的数据,并断言数据类型
                 sensor_id = json_data[k]['sensor_id']
                 assert isinstance(sensor_id, int)
                 sensor_name = json_data[k]['sensor_name']
-                profile["sensor_name"]  =  sensor_name
+                profile["sensor_name"] = sensor_name
                 assert isinstance(sensor_name, str)
                 agreement = json_data[k]['agreement']
                 assert isinstance(agreement, str)
@@ -45,7 +46,7 @@ def cli(file):
                 assert isinstance(point_location, dict)
                 # 如果传感器是modbus_rtu协议,调用modbusSensor类的getData方法,并将所有参数传给modbusSensor类里
                 if agreement == 'modbus_rtu':
-                    modbusSensor(sensor_id, sensor_name, device_descrptor, point_location, bytesize, baudrate, parity, stopbits,
-                                device_address)
+                    ModbusSensor(sensor_id, sensor_name, device_descrptor, point_location, bytesize, baudrate, parity, stopbits,
+                                 device_address)
     except Exception as e:
         print(e)

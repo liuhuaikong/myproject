@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#! -*-coding:utf-8-*-
 import time
 from modbus_tk import modbus_rtu
 import serial
@@ -10,7 +12,7 @@ mutex = threading.Lock()
 
 
 # 创建moubus协议类
-class modbusSensor(object):
+class ModbusSensor(object):
     # 初始化modbus类,并设置需要的参数
     def __init__(self, sensor_id, sensor_name, device_descrptor, point_location, bytesize=8, baudrate=9600, parity="N", stopbits=1,
                  device_address=1):
@@ -27,11 +29,11 @@ class modbusSensor(object):
         # 建立modbus_rtu协议的通信
         self.__master = modbus_rtu.RtuMaster(serial.Serial(port=self.__port, bytesize=self.__bytesize,
                                                            baudrate=self.__baudrate, parity=self.__parity, stopbits=self.__stopbits))
-        threading1 = threading.Thread(target=self.getData)
+        threading1 = threading.Thread(target=self.GetData)
         threading1.start()
 
     # 创建读取点位的方法
-    def getData(self):
+    def GetData(self):
         # 添加死循环
         while True:
             try:
@@ -47,7 +49,6 @@ class modbusSensor(object):
                             self.__master.set_timeout(5.0)
                             # 不知道什么意思,猜测是同意采集数据
                             self.__master.set_verbose(True)
-                            # logger = modbus_tk.utils.create_logger('console')
                             # 使用动作参数,采集数据
                             sensor_data = self.__master.execute(
                                 self.__device_address, 3, v['start_address'], v['data_length'])[0]
