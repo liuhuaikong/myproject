@@ -4,7 +4,7 @@
         "sensor_name":"humiture",
         "agreement":"modbus_rtu",
         "communication":{
-            "port":"/dev/ttyUSB0",
+            "port":"COM3",
             "bytesize":8,
             "baudrate":9600,
             "parity":"N",
@@ -29,7 +29,7 @@
         "sensor_name":"noise",
         "agreement":"modbus_rtu",
         "communication":{
-            "port":"/dev/ttyUSB0",
+            "port":"COM3",
             "bytesize":8,
             "baudrate":4800,
             "parity":"N",

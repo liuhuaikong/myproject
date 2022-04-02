@@ -1,11 +1,7 @@
-#!/usr/bin/env python3
 #! -*-coding:utf-8-*-
-import time
-from time import time
 import click
 from .GetModbusRtuData import ModbusSensor
 import json
-import threading
 
 
 # 创建一个装饰器
@@ -16,7 +12,7 @@ import threading
 def cli(file):
     try:
         # 使用utf8编码格式读传入的文件
-        with open(file, 'r', encoding='utf8')as f:
+        with open(file, 'r', encoding='utf8') as f:
             # 使用json.load将文本文件解析为字典类型
             json_data = json.load(f)
             # 遍历json文件中的所有传感器
