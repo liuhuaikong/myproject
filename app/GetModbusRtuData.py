@@ -1,4 +1,5 @@
 #! -*-coding:utf-8-*-
+import json
 import time
 from modbus_tk import modbus_rtu
 import serial
@@ -28,7 +29,7 @@ class ModbusSensor(object):
             port=self.__port, bytesize=self.__bytesize, baudrate=self.__baudrate, parity=self.__parity, stopbits=self.__stopbits))
         threading1 = threading.Thread(target=self.GetData)
         threading1.start()
-        self.__database = Database()
+        # self.__database = Database()
 
     # 创建读取点位的方法
     def GetData(self):
@@ -36,7 +37,6 @@ class ModbusSensor(object):
         while True:
             try:
                 mutex.acquire()
-                
                 data_dist = {}
                 for k, v in self.__point_location.items():
                     function_code = v['function_code']
@@ -52,13 +52,16 @@ class ModbusSensor(object):
                             # 使用动作参数,采集数据
                             sensor_data = str(self.__master.execute(
                                 self.__device_address, 3, v['start_address'], v['data_length'])[0])
+                            now_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())
+                            data_dist['now_time'] = now_time
                             data_dist[k] = sensor_data
                             time.sleep(1)
-                            # 数据保存到数据库
-                            # Database().InsterModbusdb()
-                        except modbus_rtu.ModbusInvalidResponseError as e:
+                        except modbus_rtu.ModbusInvalidResponsseError as e:
                             print(e)
-                print(data_dist)
+                data_json = json.dumps(data_dist)
+                print(data_json)
+                # 数据保存到数据库
+                Database(self.__sensor_name, data_json).InsterModbusdb()
                 mutex.release()
             except Exception as e:
                 print(e)
@@ -67,3 +70,4 @@ class ModbusSensor(object):
                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                 print(exc_type, fname, exc_tb.tb_lineno)
                 mutex.release()
+            time.sleep(1)

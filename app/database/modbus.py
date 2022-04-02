@@ -3,8 +3,11 @@ import sqlite3
 
 
 class Database(object):
-    def __init__(self) -> None:
-        self.__conn = self.CreateModbusdb()
+    def __init__(self, sensor_name, sensor_data) -> None:
+        self.__sensor_name = sensor_name
+        self.__sensor_data = sensor_data
+        # self.__conn = self.CreateModbusdb()
+        self.__conn = sqlite3.connect('modbus.db')
 
     def CreateModbusdb():
         conn = sqlite3.connect('modbus.db')
@@ -12,22 +15,21 @@ class Database(object):
         c = conn.cursor()
         c.execute('''
             CREATE TABLE humiture(
-                id INT PRIMARY KEY NOT NULL,
-                humidity TEXT,
-                temperature TEXT
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                sensor_data TEXT
             );''')
         c.execute('''
             CREATE TABLE noise(
-                id INT PRIMARY KEY NOT NULL,
-                noise TEXT
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                sensor_data TEXT
             );''')
         print('数据库创建成功')
         conn.commit()
         return conn
 
-    def InsterModbusdb(self, table_name, sensor_data):
-        self.__conn.execute(
-            'INSERT INTO %s (%s, %s) VALUES (%s, %s)' % (table_name, sensor_data, sensor_data, sensor_data, sensor_data))
+    def InsterModbusdb(self):
+        self.__conn.cursor()
+        self.__conn.execute("INSERT INTO %s(sensor_data) VALUES ('%s')" %(self.__sensor_name, self.__sensor_data))
         self.__conn.commit()
         print("数据插入成功")
 
@@ -35,5 +37,5 @@ class Database(object):
         self.__conn.close()
 
 
-# if __name__ == "__main__":
-#     Database.CreateModbusdb()
+if __name__ == "__main__":
+    Database.CreateModbusdb()
