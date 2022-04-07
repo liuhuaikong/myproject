@@ -1,6 +1,5 @@
 {
-    "sensor":{
-	"sensor_id":1,
+    "humiture":{
         "sensor_name":"humiture",
         "agreement":"modbus_rtu",
         "communication":{
@@ -24,8 +23,7 @@
 		}
 	}
     },
-    "sensor1":{
-	"sensor_id":2,
+    "noise":{
         "sensor_name":"noise",
         "agreement":"modbus_rtu",
         "communication":{

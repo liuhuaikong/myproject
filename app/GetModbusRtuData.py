@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 #! -*-coding:utf-8-*-
+from calendar import c
 import json
 import time
 from modbus_tk import modbus_rtu
@@ -6,16 +8,15 @@ import serial
 import threading
 import os
 import sys
-from .database import Database
+from .databases import Database
 mutex = threading.Lock()
 
 
 # 创建moubus协议类
 class ModbusSensor(object):
     # 初始化modbus类,并设置需要的参数
-    def __init__(self, sensor_id, sensor_name, device_descrptor, point_location, bytesize=8, baudrate=9600, parity="N", stopbits=1, device_address=1):
+    def __init__(self, sensor_name, device_descrptor, point_location, bytesize=8, baudrate=9600, parity="N", stopbits=1, device_address=1):
         # threading.Thread.__init__(self)
-        self.__sensor_id = sensor_id
         self.__sensor_name = sensor_name
         self.__port = device_descrptor
         self.__point_location = point_location
@@ -24,6 +25,8 @@ class ModbusSensor(object):
         self.__parity = parity
         self.__stopbits = stopbits
         self.__device_address = device_address
+        # 创建传感器表
+        Database(self.__sensor_name).CreateTable()
         # 建立modbus_rtu协议的通信
         self.__master = modbus_rtu.RtuMaster(serial.Serial(
             port=self.__port, bytesize=self.__bytesize, baudrate=self.__baudrate, parity=self.__parity, stopbits=self.__stopbits))
@@ -52,7 +55,8 @@ class ModbusSensor(object):
                             # 使用动作参数,采集数据
                             sensor_data = str(self.__master.execute(
                                 self.__device_address, 3, v['start_address'], v['data_length'])[0])
-                            now_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())
+                            now_time = time.strftime(
+                                '%Y-%m-%d %H:%M:%S', time.localtime())
                             data_dist['now_time'] = now_time
                             data_dist[k] = sensor_data
                             time.sleep(1)
@@ -61,7 +65,7 @@ class ModbusSensor(object):
                 data_json = json.dumps(data_dist)
                 print(data_json)
                 # 数据保存到数据库
-                Database(self.__sensor_name, data_json).InsterModbusdb()
+                Database(self.__sensor_name, data_json).InsterTable()
                 mutex.release()
             except Exception as e:
                 print(e)
